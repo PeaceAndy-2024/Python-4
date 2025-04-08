@@ -1,0 +1,59 @@
+def file_read_write():
+    """Reads a file, modifies its content, writes to a new file with robust error handling."""
+    
+    print("=== File Modifier Program ===")
+    
+    # Get input filename with error handling
+    while True:
+        input_file = input("Enter the input filename: ").strip()
+        if not input_file:
+            print("Error: Filename cannot be empty. Please try again.")
+            continue
+        
+        try:
+            # Try to open and read the file
+            with open(input_file, 'r') as f:
+                content = f.read()
+            break  # Exit loop if successful
+        except FileNotFoundError:
+            print(f"Error: File '{input_file}' not found. Please try again.")
+        except PermissionError:
+            print(f"Error: No permission to read '{input_file}'. Please try another file.")
+        except IsADirectoryError:
+            print(f"Error: '{input_file}' is a directory, not a file.")
+        except UnicodeDecodeError:
+            print(f"Error: Could not decode '{input_file}'. It may be a binary file.")
+        except Exception as e:
+            print(f"Unexpected error reading file: {e}. Please try again.")
+    
+    # Modify the content (example: add line numbers)
+    modified_lines = []
+    for i, line in enumerate(content.splitlines(), 1):
+        modified_lines.append(f"{i}: {line}")
+    modified_content = '\n'.join(modified_lines)
+    
+    # Get output filename with error handling
+    while True:
+        output_file = input("Enter the output filename: ").strip()
+        if not output_file:
+            print("Error: Output filename cannot be empty.")
+            continue
+        if output_file == input_file:
+            print("Error: Output filename must be different from input filename.")
+            continue
+        
+        try:
+            # Try to write to the file
+            with open(output_file, 'w') as f:
+                f.write(modified_content)
+            print(f"Success! Modified content written to '{output_file}'")
+            break
+        except PermissionError:
+            print(f"Error: No permission to write to '{output_file}'. Try another location.")
+        except IsADirectoryError:
+            print(f"Error: '{output_file}' is a directory, not a file.")
+        except Exception as e:
+            print(f"Unexpected error writing file: {e}. Please try again.")
+
+if __name__ == "__main__":
+    file_read_write()
